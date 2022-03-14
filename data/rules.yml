@@ -1,0 +1,23 @@
+version: "3.0"
+
+rules:
+
+- rule: Say goodbye anytime the user says goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Say 'I am a bot' anytime the user challenges
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+
+- rule: store symptoms in a file
+  steps:
+  - intent: describe_symptoms
+  - action: action_store_symptoms
+  - action: utter_other_symptoms
+
+
+  

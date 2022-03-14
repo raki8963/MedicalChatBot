@@ -1,0 +1,32 @@
+version: "3.0"
+
+stories:
+
+
+- story: say goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: bot challenge
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+- story: express gratitude
+  steps:
+  - intent: gratitude
+  - action: utter_no_problem
+
+- story: symptom daignosis 1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_health_issues
+  - intent: describe_symptoms
+  - action: action_store_symptoms
+  - action: utter_other_symptoms
+  - intent: deny
+  - action: action_diagnose_symptoms
+  - action: utter_bye

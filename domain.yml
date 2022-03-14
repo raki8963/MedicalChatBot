@@ -1,0 +1,56 @@
+version: "3.0"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - bot_challenge
+  - gratitude
+  - name_entry
+  - thanks
+  - gender
+  - describe_symptoms
+  - mood_unhappy
+
+entities:
+  - symptom
+  - s1
+
+slots:
+  symptom:
+    type: list
+    mappings:
+    - type: from_entity
+      entity: symptom
+
+responses:
+  utter_goodbye:
+  - text: "Bye"
+
+  utter_iamabot:
+  - text: "I am a bot, powered by Rasa."
+
+  utter_no_problem:
+  - text: "I am at your service sir/mam,cheers"
+
+  utter_greet:
+  - text: "Hi, I am a symptom diagnosis bot,what are your symptoms"
+
+  utter_health_issues:
+  - text: "Sorry to hear that , can you share the symptoms that you are suffering  with?"
+  
+  utter_other_symptoms:
+  - text: "Are you suffering from any other more symptoms?"
+  - text: "Any more symptoms?"
+
+  utter_bye:
+  - text: "Hope you do good......., good bye!"
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+actions:
+  - action_diagnose_symptoms
+  - action_store_symptoms
