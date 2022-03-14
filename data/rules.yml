@@ -19,5 +19,10 @@ rules:
   - action: action_store_symptoms
   - action: utter_other_symptoms
 
+- rule: follow diagnose
+  steps:
+  - intent: deny
+  - action: action_diagnose_symptoms
+  - action: utter_bye
 
   
