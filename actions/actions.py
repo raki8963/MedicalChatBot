@@ -19,6 +19,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn import svm
 import csv
 import warnings
+import json
 
 class ActionStoreSymptoms(Action):
     def name(self) -> Text:
@@ -40,6 +41,30 @@ class ActionDiagnoseySymptoms(Action):
 
 
     def run(self,dispatcher:CollectingDispatcher,tracker:Tracker,domain:Dict[Text,Any]) -> List[Dict[Text,Any]]:
+
+
+        def retSymDes(df,dis):
+            record=df[df['Disease']==dis]
+            # print("extract record " + str(record))
+            diseaseDescription=record['Description'].values[0]
+            print('The disease description :',diseaseDescription)
+            return diseaseDescription
+
+
+        def retSymPre(mp,dis):
+            # print('map:',mp)
+            repre=mp[dis]
+            print(repre)
+            st=''
+            i=1
+            prelis=repre.split(',')
+            for pre in prelis:
+                if pre!='nan':
+                    print(i,')',pre,sep='')
+                    st=st+str(i)+')'+str(pre)+"\n"
+                    i=i+1
+            return st
+
 
         def editDistDP(str1, str2, m, n):
         # Create a table to store results of subproblems
@@ -86,8 +111,9 @@ class ActionDiagnoseySymptoms(Action):
         y = training['prognosis']
         symptoms=[]
 
-        with open('actions/storesymptoms.txt') as file:
-            symptoms = [line.rstrip() for line in file]
+        file=open('actions/storesymptoms.txt','r+')
+        symptoms = [line.rstrip() for line in file]
+
         symind=dict()
         i=0
         for sym in cols:
@@ -103,7 +129,7 @@ class ActionDiagnoseySymptoms(Action):
             match='no'
             for rs in cols.tolist():
                 #print(rs)
-                valu=editDistDP(sym,rs,len(sym),len(rs))
+                valu=editDistDP(sym.lower(),rs.lower(),len(sym),len(rs))
                 if valu<mini:
                     match=rs
                     mini=valu
@@ -131,76 +157,71 @@ class ActionDiagnoseySymptoms(Action):
         clf.fit(x_train,y_train)
 
         yte=clf.predict(y_user.reshape(1,-1))
-        p1=yte
+        p1="Your disease is "+str(yte[0])
+
+        
+
 
         symdesc.columns=['Disease','Description']
-
-        record=symdesc[symdesc['Disease']==yte[0]]
-        # print(record)
-        diseaseDescription=record['Description'].values[0]
-        print('The disease description :',diseaseDescription)
+        # print("yte of 0 "+ str(yte[0]))
+        des=retSymDes(symdesc,yte[0])
+        
 
         p1+="\nThe disease description: "
-        p1+=diseaseDescription
+        p1+=str(des)+"\n"
 
         
 
         symprec.columns=['Disease','one','two','three','four']
 
-        re=symprec[symprec['Disease']=='Heart attack']
-        print('dup:',re)
-        print(yte[0])
-        precaution=symprec[symprec['Disease']==yte[0]]
-        print(precaution)
+        predict=dict()
+        # print('precuations')
+        for ind in symprec.index:
+            key=symprec['Disease'][ind]
+            i=1
+            value=''
+            value=value+str(symprec['one'][ind])
+            value=value+','+str(symprec['two'][ind])
+            value=value+','+str(symprec['three'][ind])
+            value=value+','+str(symprec['four'][ind])
+            predict[key]=value
+            # print(key,':',value)
+
+
+        # re=symprec[symprec['Disease']=='Heart attack']
+        # print('dup:',re)
+        # print(yte[0])
+        precaution=retSymPre(predict,yte[0])
+
+        # # temp=yte[0]
         print('The precautions are:')
-        p1+='\nThe precautions are:'
-        
-        i=1
-        pre=precaution['one'].values[0]
-        print(pre)
 
-        if pre!='nan':
-            print(str(i),')',pre,sep='')
-            p1+="\n"
-            p1+=(pre)
-            i=i+1
-        
-        pre=precaution['two'].values[0]
-        if pre!='nan':
-            print(str(i),')',pre,sep='')
-            p1+="\n"
-            p1+=(pre)
-            i=i+1
-        pre=precaution['three'].values[0]
-        if pre!='nan':
-            print(str(i),')',pre,sep='')
-            p1+="\n"
-            p1+=(pre)
-            i=i+1
+        print(precaution)
+    
+        p1+='\nThe precautions are:\n'
+        p1=p1+str(precaution)
+    
 
-        pre=precaution['four'].values[0]
-        if pre!='nan':
-            print(str(i),')',pre,sep='')
-            p1+="\n"
-            p1+=(pre)
-            i=i+1
+       
+        # dimensionality_reduction = training.groupby(training['prognosis']).max()
+        # diseases = dimensionality_reduction.index
+        # diseases = pd.DataFrame(diseases)
+        # docdata.columns=['Doctor','Link']
+        # docdata['Disease'] = diseases['prognosis']
 
-        dimensionality_reduction = training.groupby(training['prognosis']).max()
-        diseases = dimensionality_reduction.index
-        diseases = pd.DataFrame(diseases)
-        docdata.columns=['Doctor','Link']
-        docdata['Disease'] = diseases['prognosis']
+        # print('Are you feeling high severity of your disease? Enter yes/no')
+        # query=input()
+        # if query.lower()=='yes':
+        #     record=docdata[docdata['Disease']==yte[0]]
+        #     print('Doctor name:',record['Doctor'].values[0])
+        #     print('Vist link:',record['Link'].values[0])
+        # else:
+        #     print('follw precautions')
 
-        print('Are you feeling high severity of your disease? Enter yes/no')
-        query=input()
-        if query.lower()=='yes':
-            record=docdata[docdata['Disease']==yte[0]]
-            print('Doctor name:',record['Doctor'].values[0])
-            print('Vist link:',record['Link'].values[0])
-        else:
-            print('follw precautions')
+        file.seek(0)
+        file.truncate()
+        dispatcher.utter_message(str(p1))
 
-        dispatcher.utter_message(p1)
 
         return []
         
