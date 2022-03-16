@@ -1,0 +1,74 @@
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed" rel="stylesheet">
+<link rel="stylesheet" href="https://npm-scalableminds.s3.eu-central-1.amazonaws.com/@scalableminds/chatroom@master/dist/Chatroom.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
+<link rel="stylesheet" href="styles.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://npm-scalableminds.s3.eu-central-1.amazonaws.com/@scalableminds/chatroom@master/dist/Chatroom.css" />
+</head>
+<style>
+  .chatting
+  {
+    width:300px;
+    height:400px;
+    margin-top:260px;
+    margin-left:1130px;
+    min-height: 100px;
+  }
+  .chatting .chat-container .chat{
+    font-size: 15px;
+    font-family: Sans-serif;
+}
+  .chatting .chat-container .chatroom{
+    height:400px;
+    background-color:rgba(228, 220, 220, 0.582) ;
+    border-radius:10px;
+    box-shadow: 2px 2px 2px 2px #eee4e4;
+}
+.chatroom closed {
+  height: 40px;
+}
+</style>
+<body>
+  <div class="chatting" id="mcb">
+    <div class="chat-container"></div>
+  </div>
+  <script src="https://npm-scalableminds.s3.eu-central-1.amazonaws.com/@scalableminds/chatroom@master/dist/Chatroom.js"/></script>
+  <script type="text/javascript">
+    var chatroom = new window.Chatroom({
+      host: "http://localhost:5005",
+      title: "Chat with MedicalBot",
+      container: document.querySelector(".chat-container"),
+      welcomeMessage: "Hi, I am Medical chatbot. How may I help you?",
+      speechRecognition: "en-US",
+      voiceLang: "en-US"
+    });
+    chatroom.openChat();
+  </script>
+  <section>
+
+    <button class="chat-btn" onclick="Open()"> 
+        <i class="material-icons"> comment </i>
+    </button>
+
+    <script>
+      function Open()
+      {
+        var x = document.getElementById("mcb");
+        if(x.style.display==='none')
+        {
+          x.style.display="block"
+        }
+        else
+        {
+          x.style.display="none"
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.1.1/dist/index.min.js"></script>
+    <script src="main.js"></script>
+</section>
+</body>

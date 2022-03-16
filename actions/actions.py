@@ -17,6 +17,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
 import csv
 import warnings
 import json
@@ -153,9 +154,12 @@ class ActionDiagnoseySymptoms(Action):
         #     ac.append(sc)
         #     c=c+0.001
 
-        clf=svm.SVC(C=0.0175)
-        clf.fit(x_train,y_train)
+        # clf=svm.SVC(C=0.0175)
+        # clf.fit(x_train,y_train)
 
+        # yte=clf.predict(y_user.reshape(1,-1))
+        clf = RandomForestClassifier(max_depth=7,random_state=0)
+        clf.fit(x,y)
         yte=clf.predict(y_user.reshape(1,-1))
         p1="Your disease is "+str(yte[0])
 
@@ -223,5 +227,4 @@ class ActionDiagnoseySymptoms(Action):
         dispatcher.utter_message(str(p1))
 
 
-        return []
-        
+        return []    
